@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwistedPair - Signal Distortion Interface</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2rem;
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 4px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .mode-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: all 0.3s;
+      color: #666;
+    }
+
+    .mode-btn.active {
+      background: white;
+      color: #667eea;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .input-section {
+      margin-bottom: 2rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .knobs-section {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    .knobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .knob {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .knob label {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .knob select,
+    .knob input[type="range"] {
+      padding: 0.5rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .knob select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .knob input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #ddd;
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    .knob input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .knob input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .knob-value {
+      text-align: center;
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1.2rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .distort-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .distort-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .distort-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #667eea;
+      font-size: 1.2rem;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .outputs {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .output-card {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 1.5rem;
+      border-radius: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .output-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .output-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .mode-badge { background: #e3f2fd; color: #1976d2; }
+    .tone-badge { background: #f3e5f5; color: #7b1fa2; }
+    .gain-badge { background: #e8f5e9; color: #388e3c; }
+
+    .output-text {
+      color: #333;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #999;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎸 TwistedPair</h1>
+    <p class="subtitle">Transform your signals through the distortion pedal</p>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="switchMode('ensemble')">Ensemble Mode</button>
+      <button class="mode-btn" onclick="switchMode('manual')">Manual Mode</button>
+    </div>
+
+    <div class="input-section">
+      <textarea 
+        id="signalInput" 
+        placeholder="Enter your signal here... (e.g., 'AI will replace many jobs')"
+      ></textarea>
+    </div>
+
+    <div class="knobs-section">
+      <div class="knobs-grid">
+        <!-- Mode knob - only visible in manual mode -->
+        <div class="knob hidden" id="modeKnob">
+          <label>Mode</label>
+          <select id="modeSelect"></select>
+        </div>
+
+        <!-- Tone knob - always visible -->
+        <div class="knob">
+          <label>Tone</label>
+          <select id="toneSelect"></select>
+        </div>
+
+        <!-- Gain knob - always visible -->
+        <div class="knob">
+          <label>Gain</label>
+          <input type="range" id="gainSlider" min="1" max="10" value="5">
+          <div class="knob-value" id="gainValue">5</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="distort-btn" id="distortBtn" onclick="distortSignal()">
+        <span id="btnText">🔊 Distort Signal (All 6 Modes)</span>
+      </button>
+    </div>
+
+    <div id="outputContainer"></div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:8000';
+    let currentMode = 'ensemble';
+    let modes = [];
+    let tones = [];
+
+    // Load knob options from API
+    async function loadKnobs() {
+      try {
+        const response = await fetch(`${API_URL}/knobs`);
+        const data = await response.json();
+        modes = data.modes;
+        tones = data.tones;
+
+        // Populate mode dropdown
+        const modeSelect = document.getElementById('modeSelect');
+        modes.forEach(mode => {
+          const option = document.createElement('option');
+          option.value = mode;
+          option.textContent = mode.toUpperCase();
+          modeSelect.appendChild(option);
+        });
+
+        // Populate tone dropdown
+        const toneSelect = document.getElementById('toneSelect');
+        tones.forEach(tone => {
+          const option = document.createElement('option');
+          option.value = tone;
+          option.textContent = tone.toUpperCase();
+          toneSelect.appendChild(option);
+        });
+
+        // Set default tone to neutral
+        toneSelect.value = 'neutral';
+      } catch (error) {
+        console.error('Failed to load knobs:', error);
+      }
+    }
+
+    // Update gain value display
+    document.getElementById('gainSlider').oninput = (e) => {
+      document.getElementById('gainValue').textContent = e.target.value;
+    };
+
+    // Switch between ensemble and manual mode
+    function switchMode(mode) {
+      currentMode = mode;
+      
+      // Update button styles
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Show/hide mode knob
+      const modeKnob = document.getElementById('modeKnob');
+      const btnText = document.getElementById('btnText');
+      
+      if (mode === 'manual') {
+        modeKnob.classList.remove('hidden');
+        btnText.textContent = '🎛️ Distort Signal (Custom)';
+      } else {
+        modeKnob.classList.add('hidden');
+        btnText.textContent = '🔊 Distort Signal (All 6 Modes)';
+      }
+    }
+
+    async function distortSignal() {
+      const input = document.getElementById('signalInput').value.trim();
+      
+      if (!input) {
+        alert('Please enter a signal to distort');
+        return;
+      }
+
+      const btn = document.getElementById('distortBtn');
+      const container = document.getElementById('outputContainer');
+      
+      const tone = document.getElementById('toneSelect').value;
+      const gain = parseInt(document.getElementById('gainSlider').value);
+
+      // Show loading state
+      btn.disabled = true;
+      const loadingMsg = currentMode === 'ensemble' 
+        ? 'Distorting signal through 6 perspectives...'
+        : 'Distorting signal with custom settings...';
+      
+      container.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>${loadingMsg}</p>
+        </div>
+      `;
+
+      try {
+        if (currentMode === 'ensemble') {
+          await distortEnsemble(input, tone, gain);
+        } else {
+          await distortManual(input, tone, gain);
+        }
+      } catch (error) {
+        container.innerHTML = `
+          <div class="loading" style="color: #dc3545;">
+            <p>❌ Error: ${error.message}</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">Make sure the server is running: <code>uvicorn server:app --reload</code></p>
+          </div>
+        `;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function distortEnsemble(input, tone, gain) {
+      const response = await fetch(`${API_URL}/distort`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: input,
+          source: 'web-ui-ensemble',
+          captured_at: new Date().toISOString(),
+          tags: [],
+          tone: tone,
+          gain: gain
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      displayOutputs(data.outputs);
+    }
+
+    async function distortManual(input, tone, gain) {
+      const mode = document.getElementById('modeSelect').value;
+      
+      const response = await fetch(`${API_URL}/distort-manual`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: input,
+          mode: mode,
+          tone: tone,
+          gain: gain
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      displayOutputs([data.output]);
+    }
+
+    function displayOutputs(outputs) {
+      const container = document.getElementById('outputContainer');
+      
+      if (!outputs || outputs.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>No outputs generated</p>
+          </div>
+        `;
+        return;
+      }
+
+      const html = outputs.map(output => `
+        <div class="output-card">
+          <div class="output-header">
+            <span class="badge mode-badge">${output.mode}</span>
+            <span class="badge tone-badge">${output.tone}</span>
+            <span class="badge gain-badge">Gain ${output.gain}</span>
+          </div>
+          <div class="output-text">${escapeHtml(output.response)}</div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `<div class="outputs">${html}</div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Allow Enter+Shift to submit
+    document.getElementById('signalInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        distortSignal();
+      }
+    });
+
+    // Initialize
+    loadKnobs();
+  </script>
+</body>
+</html>

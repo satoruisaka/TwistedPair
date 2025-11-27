@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwistedPair - Analog Knobs Interface</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .model-selector {
+      max-width: 400px;
+      margin: 0 auto 2rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+    }
+
+    .model-selector label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .model-selector select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .model-selector select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .model-selector select:hover {
+      border-color: #999;
+    }
+
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2rem;
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 4px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .mode-btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: all 0.3s;
+      color: #666;
+    }
+
+    .mode-btn.active {
+      background: white;
+      color: #667eea;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .input-section {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .clear-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #e0e0e0;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: #666;
+      transition: all 0.2s;
+    }
+
+    .clear-btn:hover {
+      background: #d0d0d0;
+      color: #333;
+    }
+
+    .clear-btn:active {
+      transform: scale(0.95);
+    }
+
+    .pedal-board {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: inset 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .knobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .knob-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .knob-label {
+      color: #ecf0f1;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .knob {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .knob:active {
+      cursor: grabbing;
+    }
+
+    .knob-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #34495e, #2c3e50);
+      box-shadow: 
+        0 8px 16px rgba(0,0,0,0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+      position: relative;
+      transition: transform 0.05s, box-shadow 0.3s;
+    }
+
+    .knob-body.processing {
+      animation: knobPulse 2s ease-in-out infinite;
+      box-shadow: 
+        0 8px 16px rgba(0,0,0,0.4),
+        0 0 30px rgba(102, 126, 234, 0.6),
+        0 0 60px rgba(118, 75, 162, 0.4),
+        inset 0 -2px 4px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.1);
+    }
+
+    @keyframes knobPulse {
+      0%, 100% {
+        box-shadow: 
+          0 8px 16px rgba(0,0,0,0.4),
+          0 0 20px rgba(102, 126, 234, 0.4),
+          0 0 40px rgba(118, 75, 162, 0.2),
+          inset 0 -2px 4px rgba(0,0,0,0.5),
+          inset 0 2px 4px rgba(255,255,255,0.1);
+      }
+      50% {
+        box-shadow: 
+          0 8px 16px rgba(0,0,0,0.4),
+          0 0 40px rgba(102, 126, 234, 0.8),
+          0 0 80px rgba(118, 75, 162, 0.6),
+          inset 0 -2px 4px rgba(0,0,0,0.5),
+          inset 0 2px 4px rgba(255,255,255,0.1);
+      }
+    }
+
+    .knob:active .knob-body {
+      transform: scale(0.98);
+    }
+
+    .knob-indicator {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      width: 4px;
+      height: 35%;
+      background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+      transform: translateX(-50%);
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .knob-handle {
+      position: absolute;
+      top: 8%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(145deg, #e74c3c, #c0392b);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 
+        0 3px 6px rgba(0,0,0,0.6),
+        inset 0 1px 2px rgba(255,255,255,0.3);
+      cursor: grab;
+      z-index: 10;
+    }
+
+    .knob:active .knob-handle {
+      cursor: grabbing;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .knob-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30%;
+      height: 30%;
+      background: #1a1a1a;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .knob-value {
+      color: #3498db;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-align: center;
+      min-height: 1.5rem;
+    }
+
+    .knob-range {
+      color: #95a5a6;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      padding: 1rem 3rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .distort-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .distort-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .distort-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .cancel-btn {
+      background: #dc3545;
+      color: white;
+      display: none;
+    }
+
+    .cancel-btn:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .cancel-btn.visible {
+      display: inline-block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #667eea;
+      font-size: 1.2rem;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .outputs {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .output-card {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 1.5rem;
+      border-radius: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .output-card:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .output-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .mode-badge { background: #e3f2fd; color: #1976d2; }
+    .tone-badge { background: #f3e5f5; color: #7b1fa2; }
+    .gain-badge { background: #e8f5e9; color: #388e3c; }
+    .model-badge { background: #fff3e0; color: #e65100; }
+    .time-badge { background: #f5f5f5; color: #616161; font-size: 0.75rem; font-weight: normal; }
+
+    .output-text {
+      color: #333;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .copy-btn:hover {
+      background: #5568d3;
+      transform: scale(1.05);
+    }
+
+    .copy-btn.copied {
+      background: #28a745;
+    }
+
+    .copy-all-btn {
+      display: block;
+      margin: 0 auto 1.5rem;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .copy-all-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+    }
+
+    .copy-all-btn.copied {
+      background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎸 TwistedPair</h1>
+    <p class="subtitle">Transform your signals through the distortion pedal</p>
+
+    <div class="model-selector">
+      <label for="modelSelect">🔧 LLM Model</label>
+      <select id="modelSelect">
+        <option value="">Loading models...</option>
+      </select>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="switchMode('ensemble')">Ensemble Mode</button>
+      <button class="mode-btn" onclick="switchMode('manual')">Manual Mode</button>
+    </div>
+
+    <div class="input-section">
+      <textarea 
+        id="signalInput" 
+        placeholder="Enter your signal here... (e.g., 'AI will replace many jobs')"
+      ></textarea>
+      <button class="clear-btn" onclick="clearInput()">✕ Clear</button>
+    </div>
+
+    <div class="pedal-board">
+      <div class="knobs-grid">
+        <!-- Mode Knob (Manual only) -->
+        <div class="knob-container hidden" id="modeKnobContainer">
+          <div class="knob-label">MODE</div>
+          <div class="knob" id="modeKnob">
+            <div class="knob-body">
+              <div class="knob-indicator"></div>
+              <div class="knob-handle"></div>
+              <div class="knob-center"></div>
+            </div>
+          </div>
+          <div class="knob-value" id="modeValue">INVERT_ER</div>
+          <div class="knob-range">6 modes</div>
+        </div>
+
+        <!-- Tone Knob -->
+        <div class="knob-container">
+          <div class="knob-label">TONE</div>
+          <div class="knob" id="toneKnob">
+            <div class="knob-body">
+              <div class="knob-indicator"></div>
+              <div class="knob-handle"></div>
+              <div class="knob-center"></div>
+            </div>
+          </div>
+          <div class="knob-value" id="toneValue">NEUTRAL</div>
+          <div class="knob-range">5 styles</div>
+        </div>
+
+        <!-- Gain Knob -->
+        <div class="knob-container">
+          <div class="knob-label">GAIN</div>
+          <div class="knob" id="gainKnob">
+            <div class="knob-body">
+              <div class="knob-indicator"></div>
+              <div class="knob-handle"></div>
+              <div class="knob-center"></div>
+            </div>
+          </div>
+          <div class="knob-value" id="gainValue">5</div>
+          <div class="knob-range">1-10</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="distort-btn" id="distortBtn" onclick="distortSignal()">
+        <span id="btnText">🔊 Distort Signal (All 6 Modes)</span>
+      </button>
+      <button class="cancel-btn" id="cancelBtn" onclick="cancelDistortion()">
+        ✕ Cancel
+      </button>
+    </div>
+
+    <div id="outputContainer"></div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:8000';
+    let currentMode = 'ensemble';
+    let modes = [];
+    let tones = [];
+    let models = [];
+    let defaultModel = '';
+    let abortController = null;
+    
+    // Knob state
+    let modeIndex = 0;
+    let toneIndex = 1; // Default to NEUTRAL
+    let gainValue = 5;
+
+    // Load available models from API
+    async function loadModels() {
+      try {
+        const response = await fetch(`${API_URL}/models`);
+        const data = await response.json();
+        models = data.models;
+        defaultModel = data.default;
+
+        const modelSelect = document.getElementById('modelSelect');
+        modelSelect.innerHTML = '';
+        
+        models.forEach(model => {
+          const option = document.createElement('option');
+          option.value = model;
+          option.textContent = model;
+          if (model === defaultModel) {
+            option.selected = true;
+          }
+          modelSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Failed to load models:', error);
+        document.getElementById('modelSelect').innerHTML = '<option>Error loading models</option>';
+      }
+    }
+
+    // Load knob options from API
+    async function loadKnobs() {
+      try {
+        const response = await fetch(`${API_URL}/knobs`);
+        const data = await response.json();
+        modes = data.modes;
+        tones = data.tones;
+        
+        // Set initial values
+        updateModeDisplay();
+        updateToneDisplay();
+        updateGainDisplay();
+      } catch (error) {
+        console.error('Failed to load knobs:', error);
+      }
+    }
+
+    // Rotary knob logic with circular drag
+    function initKnob(element, onUpdate) {
+      let isDragging = false;
+      let currentAngle = 0;
+      let lastMouseAngle = 0;
+
+      function getMouseAngle(e, element) {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        
+        // Calculate angle from center to mouse position
+        const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+        return angle * (180 / Math.PI); // Convert to degrees
+      }
+
+      function getTouchAngle(e, element) {
+        const rect = element.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
+        
+        const angle = Math.atan2(touchY - centerY, touchX - centerX);
+        return angle * (180 / Math.PI);
+      }
+
+      function normalizeAngleDelta(delta) {
+        // Handle wraparound: if delta is > 180, we crossed the -180/180 boundary
+        if (delta > 180) return delta - 360;
+        if (delta < -180) return delta + 360;
+        return delta;
+      }
+
+      element.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        currentAngle = getCurrentAngle(element);
+        lastMouseAngle = getMouseAngle(e, element);
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const mouseAngle = getMouseAngle(e, element);
+        const delta = normalizeAngleDelta(mouseAngle - lastMouseAngle);
+        lastMouseAngle = mouseAngle;
+        
+        // Apply delta to current angle
+        currentAngle += delta;
+        
+        // Clamp to -135 to +135 degrees (270 degree range)
+        currentAngle = Math.max(-135, Math.min(135, currentAngle));
+        
+        setKnobAngle(element, currentAngle);
+        onUpdate(currentAngle);
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch support
+      element.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        currentAngle = getCurrentAngle(element);
+        lastMouseAngle = getTouchAngle(e, element);
+        e.preventDefault();
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const touchAngle = getTouchAngle(e, element);
+        const delta = normalizeAngleDelta(touchAngle - lastMouseAngle);
+        lastMouseAngle = touchAngle;
+        
+        currentAngle += delta;
+        currentAngle = Math.max(-135, Math.min(135, currentAngle));
+        
+        setKnobAngle(element, currentAngle);
+        onUpdate(currentAngle);
+      });
+
+      document.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+    }
+
+    function getCurrentAngle(element) {
+      const transform = element.querySelector('.knob-body').style.transform;
+      const match = transform.match(/rotate\((-?\d+(?:\.\d+)?)deg\)/);
+      return match ? parseFloat(match[1]) : 0;
+    }
+
+    function setKnobAngle(element, angle) {
+      element.querySelector('.knob-body').style.transform = `rotate(${angle}deg)`;
+    }
+
+    function angleToIndex(angle, maxIndex) {
+      // Map -135 to +135 degrees to 0 to maxIndex
+      const normalized = (angle + 135) / 270;
+      return Math.round(normalized * maxIndex);
+    }
+
+    function angleToValue(angle, min, max) {
+      const normalized = (angle + 135) / 270;
+      return Math.round(normalized * (max - min) + min);
+    }
+
+    // Mode knob
+    initKnob(document.getElementById('modeKnob'), (angle) => {
+      modeIndex = angleToIndex(angle, modes.length - 1);
+      updateModeDisplay();
+    });
+
+    // Tone knob
+    initKnob(document.getElementById('toneKnob'), (angle) => {
+      toneIndex = angleToIndex(angle, tones.length - 1);
+      updateToneDisplay();
+    });
+
+    // Gain knob
+    initKnob(document.getElementById('gainKnob'), (angle) => {
+      gainValue = angleToValue(angle, 1, 10);
+      updateGainDisplay();
+    });
+
+    function updateModeDisplay() {
+      if (modes.length > 0) {
+        document.getElementById('modeValue').textContent = modes[modeIndex].toUpperCase();
+      }
+    }
+
+    function updateToneDisplay() {
+      if (tones.length > 0) {
+        document.getElementById('toneValue').textContent = tones[toneIndex].toUpperCase();
+      }
+    }
+
+    function updateGainDisplay() {
+      document.getElementById('gainValue').textContent = gainValue;
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      const modeKnobContainer = document.getElementById('modeKnobContainer');
+      const btnText = document.getElementById('btnText');
+      
+      if (mode === 'manual') {
+        modeKnobContainer.classList.remove('hidden');
+        btnText.textContent = '🎛️ Distort Signal (Custom)';
+      } else {
+        modeKnobContainer.classList.add('hidden');
+        btnText.textContent = '🔊 Distort Signal (All 6 Modes)';
+      }
+    }
+
+    async function distortSignal() {
+      const input = document.getElementById('signalInput').value.trim();
+      
+      if (!input) {
+        alert('Please enter a signal to distort');
+        return;
+      }
+
+      const btn = document.getElementById('distortBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const container = document.getElementById('outputContainer');
+      
+      const tone = tones[toneIndex];
+      const gain = gainValue;
+      const model = document.getElementById('modelSelect').value;
+
+      btn.disabled = true;
+      cancelBtn.classList.add('visible');
+      
+      // Create new abort controller for this request
+      abortController = new AbortController();
+      
+      // Add processing class to all knobs
+      document.querySelectorAll('.knob-body').forEach(knob => {
+        knob.classList.add('processing');
+      });
+      
+      const loadingMsg = currentMode === 'ensemble' 
+        ? 'Distorting signal through 6 perspectives...'
+        : 'Distorting signal with custom settings...';
+      
+      container.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>${loadingMsg}</p>
+        </div>
+      `;
+
+      try {
+        if (currentMode === 'ensemble') {
+          await distortEnsemble(input, tone, gain);
+        } else {
+          await distortManual(input, tone, gain);
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          container.innerHTML = `
+            <div class="loading" style="color: #ff9800;">
+              <p>⚠️ Operation cancelled</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="loading" style="color: #dc3545;">
+              <p>❌ Error: ${error.message}</p>
+              <p style="font-size: 0.9rem; margin-top: 1rem;">Make sure the server is running</p>
+            </div>
+          `;
+        }
+      } finally {
+        btn.disabled = false;
+        cancelBtn.classList.remove('visible');
+        abortController = null;
+        // Remove processing class from all knobs
+        document.querySelectorAll('.knob-body').forEach(knob => {
+          knob.classList.remove('processing');
+        });
+      }
+    }
+
+    function cancelDistortion() {
+      if (abortController) {
+        abortController.abort();
+      }
+    }
+
+    async function distortEnsemble(input, tone, gain) {
+      const model = document.getElementById('modelSelect').value;
+      const timestamp = new Date().toISOString();
+      
+      const response = await fetch(`${API_URL}/distort`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: input,
+          source: 'web-ui-ensemble',
+          captured_at: timestamp,
+          tags: [],
+          tone: tone,
+          gain: gain,
+          model: model
+        }),
+        signal: abortController.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      displayOutputs(data.outputs, model, timestamp);
+    }
+
+    async function distortManual(input, tone, gain) {
+      const mode = modes[modeIndex];
+      const model = document.getElementById('modelSelect').value;
+      const timestamp = new Date().toISOString();
+      
+      const response = await fetch(`${API_URL}/distort-manual`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: input,
+          mode: mode,
+          tone: tone,
+          gain: gain,
+          model: model
+        }),
+        signal: abortController.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      displayOutputs([data.output], model, timestamp);
+    }
+
+    function displayOutputs(outputs, model, timestamp) {
+      const container = document.getElementById('outputContainer');
+      
+      if (!outputs || outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No outputs generated</p></div>';
+        return;
+      }
+
+      const timeStr = new Date(timestamp).toLocaleTimeString();
+
+      const html = outputs.map((output, index) => `
+        <div class="output-card" data-output-index="${index}">
+          <div class="output-header">
+            <span class="badge mode-badge">${output.mode}</span>
+            <span class="badge tone-badge">${output.tone}</span>
+            <span class="badge gain-badge">Gain ${output.gain}</span>
+            <span class="badge model-badge">🤖 ${model}</span>
+            <span class="badge time-badge">🕐 ${timeStr}</span>
+            <button class="copy-btn" onclick="copyOutput(${index})">📋 Copy</button>
+          </div>
+          <div class="output-text" data-text="${escapeHtml(output.response).replace(/"/g, '&quot;')}">${escapeHtml(output.response)}</div>
+        </div>
+      `).join('');
+
+      const copyAllBtn = outputs.length > 1 ? '<button class="copy-all-btn" onclick="copyAllOutputs()">📋 Copy All Outputs</button>' : '';
+      container.innerHTML = `${copyAllBtn}<div class="outputs">${html}</div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function copyOutput(index) {
+      const card = document.querySelector(`[data-output-index="${index}"]`);
+      const textElement = card.querySelector('.output-text');
+      const btn = card.querySelector('.copy-btn');
+      
+      // Get the actual text content (not HTML)
+      const text = textElement.textContent;
+      
+      try {
+        await navigator.clipboard.writeText(text);
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        btn.textContent = '✗ Failed';
+        setTimeout(() => {
+          btn.textContent = '📋 Copy';
+        }, 2000);
+      }
+    }
+
+    async function copyAllOutputs() {
+      const outputs = document.querySelectorAll('.output-text');
+      const btn = document.querySelector('.copy-all-btn');
+      
+      // Collect all output texts with separators
+      const allText = Array.from(outputs).map((output, index) => {
+        const card = output.closest('.output-card');
+        const mode = card.querySelector('.mode-badge').textContent;
+        const tone = card.querySelector('.tone-badge').textContent;
+        const gain = card.querySelector('.gain-badge').textContent;
+        const separator = '='.repeat(60);
+        return `${separator}\n${mode} | ${tone} | ${gain}\n${separator}\n${output.textContent}\n`;
+      }).join('\n\n');
+      
+      try {
+        await navigator.clipboard.writeText(allText);
+        const originalText = btn.textContent;
+        btn.textContent = '✓ All Copied!';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy all:', err);
+        btn.textContent = '✗ Failed';
+        setTimeout(() => {
+          btn.textContent = '📋 Copy All Outputs';
+        }, 2000);
+      }
+    }
+
+    function clearInput() {
+      document.getElementById('signalInput').value = '';
+      document.getElementById('signalInput').focus();
+    }
+
+    document.getElementById('signalInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        distortSignal();
+      }
+    });
+
+    // Initialize
+    loadModels();
+    loadKnobs();
+  </script>
+</body>
+</html>
