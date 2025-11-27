@@ -30,6 +30,16 @@ TwistedPair is a signal distortion system with three control knobs:
 - **Ensemble Mode**: Run all 6 distortion modes simultaneously with shared Tone/Gain
 - **Manual Mode**: Select specific Mode + Tone + Gain combination for targeted output
 
+---
+
+![TwistedPair V1 manual mode](TwistedPairV1_screenshot1.jpg)
+
+---
+
+![TwistedPair V1 ensemble mode](TwistedPairV1_screenshot2.jpg)
+
+---
+
 ## Features
 
 ✅ **Analog Knob Interface** - Guitar pedal aesthetic with rotary drag controls  
@@ -215,3 +225,4 @@ Built with:
 
 **TwistedPair V1.0** - Signal distortion through rhetorical operations  
 *"Like a pedal, but for ideas"*
+
