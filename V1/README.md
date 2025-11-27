@@ -1,6 +1,6 @@
 # 🎸 TwistedPair V1.0
 
-Transform your signals through LLM-based distortion pedals. Like a guitar pedal processes audio, TwistedPair processes text through multiple "rhetorical operations" to provide diverse perspectives on any input.
+Transform your signals through LLM-based distortion pedals. Like a guitar pedal processes audio, TwistedPair processes text through multiple "rhetorical operations" to provide diverse perspectives on any input. This is an experimental application, exploiting the unpredictable, hallucinatory nature of LLMs. 
 
 **Released:** November 26, 2025
 
@@ -40,15 +40,15 @@ TwistedPair is a signal distortion system with three control knobs:
 
 ---
 
+
+
 ## Features
 
 ✅ **Analog Knob Interface** - Guitar pedal aesthetic with rotary drag controls  
-✅ **7 LLM Models** - Dynamic selection (mistral, llama3.1, gemma3:4b, phi3:14b, openchat, dolphin3, qwen3)  
+✅ **Completely Local** - No cloud, no cost, no Internet required. Privacy protected.  
+✅ **Multiple LLM Models** - Dynamic selection (mistral, llama3.1, gemma3:4b, phi3:14b, openchat, dolphin3, qwen3)  
 ✅ **Real-time Processing** - Animated knob glow during generation  
 ✅ **Copy to Clipboard** - Individual outputs or all outputs with formatted headers  
-✅ **Cancel Anytime** - Abort requests mid-flight with AbortController  
-✅ **Keyboard Shortcuts** - Shift+Enter to submit  
-✅ **Error Handling** - Helpful messages for all failure modes  
 
 ## Quick Start
 
@@ -61,7 +61,7 @@ TwistedPair is a signal distortion system with three control knobs:
 
 1. **Install Python dependencies:**
 ```bash
-pip install fastapi==0.121.3 uvicorn==0.38.0 requests==2.32.5
+pip install fastapi==0.121.3 uvicorn==0.38.0 requests==2.32.5 jinja2==3.1.6
 ```
 
 2. **Start Ollama** (if not already running):
@@ -145,32 +145,12 @@ AVAILABLE_LLM_MODELS = [...]  # Add/remove models
 OUTPUT_DIR = "./runs"  # Change output directory
 ```
 
-Edit `twistedpair.config` for pipeline settings (used in V2).
-
-## Docker Deployment
-
-Build and run the containerized service:
-```bash
-docker build -f docker_distortion_service.dockerfile -t twistedpair .
-docker run -p 8000:8000 twistedpair
-```
-
 ## Version Artifacts
 
 This release includes multiple interface variants:
 - **index.html** - Default (analog knobs + glow effects)
 - **index_simple.html** - Dropdown selectors (no knobs)
 - **index_noFX.html** - Analog knobs without glow effects
-
-## Project Philosophy
-
-TwistedPair treats text like audio signals:
-- **Input** = Raw signal captured from reality
-- **Knobs** = Transformation parameters (mode/tone/gain)
-- **Output** = Distorted signal with new characteristics
-- **Provenance** = Full metadata chain preserved
-
-Every output includes complete provenance: original signal, knob settings, model info, timestamps. The system is designed for **rhetorical exploration**, not truth-seeking—like a distortion pedal creates new sounds, TwistedPair creates new perspectives.
 
 ## Development
 
@@ -225,4 +205,8 @@ Built with:
 
 **TwistedPair V1.0** - Signal distortion through rhetorical operations  
 *"Like a pedal, but for ideas"*
+
+
+
+
 
