@@ -1,22 +1,14 @@
 # pedal.py
 from twistedtypes import Knobs, Mode, Tone, Signal, Prompt
-from config import (
-    TEMP_MIN, TEMP_MAX, 
-    TOP_K_MIN, TOP_K_MAX, 
-    TOP_P_MIN, TOP_P_MAX,
-    GAIN_MIN, GAIN_MAX
-)
 
 def distort(signal: Signal, knobs: Knobs) -> Prompt:
     """
     Build a system + user prompt based on the signal and knob settings.
-    Includes temperature, top-k, top-p, and metadata for provenance.
+    Includes explicit temperature and metadata for provenance.
     """
     mode_instruction = MODE_INSTRUCTIONS[knobs.mode]
     tone_style = TONE_STYLES[knobs.tone]
     temp = gain_to_temperature(knobs.gain)
-    top_k = gain_to_top_k(knobs.gain)
-    top_p = gain_to_top_p(knobs.gain)
 
     system_prompt = (
         "You are a distortion pedal that transforms signals using explicit rhetorical operations.\n"
@@ -50,25 +42,13 @@ def distort(signal: Signal, knobs: Knobs) -> Prompt:
         system=system_prompt,
         user=user_prompt,
         temperature=temp,
-        top_k=top_k,
-        top_p=top_p,
         metadata=metadata
     )
 
 
 def gain_to_temperature(g: int) -> float:
-    """Map gain to temperature using linear interpolation"""
-    return round(TEMP_MIN + ((TEMP_MAX - TEMP_MIN) / (GAIN_MAX - GAIN_MIN)) * (g - GAIN_MIN), 2)
-
-
-def gain_to_top_k(g: int) -> int:
-    """Map gain to top-k using linear interpolation"""
-    return round(TOP_K_MIN + ((TOP_K_MAX - TOP_K_MIN) / (GAIN_MAX - GAIN_MIN)) * (g - GAIN_MIN))
-
-
-def gain_to_top_p(g: int) -> float:
-    """Map gain to top-p using linear interpolation"""
-    return round(TOP_P_MIN + ((TOP_P_MAX - TOP_P_MIN) / (GAIN_MAX - GAIN_MIN)) * (g - GAIN_MIN), 2)
+    # Map 1..10 to 0.1..2.0 - high gain produces wild, creative outputs
+    return round(0.1 + (g / 10) * 1.9, 2)
 
 MODE_INSTRUCTIONS = {
     Mode.INVERT_ER: (

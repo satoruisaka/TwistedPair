@@ -1,5 +1,7 @@
 # config.py
 # TwistedPair configuration
+# top-k and top-p sampling are not used currently. Only temperature is applied.
+# to control randomness and creativity of outputs.
 
 # Ollama settings
 OLLAMA_URL = "http://localhost:11434/api/generate"

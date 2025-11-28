@@ -5,7 +5,7 @@ import requests
 import json
 from config import OLLAMA_URL, DEFAULT_MODEL, NUM_CTX
 
-def ollama_sampler(system: str, user: str, temperature: float, top_k: int = 40, top_p: float = 0.9, model_name: str = DEFAULT_MODEL) -> str:
+def ollama_sampler(system: str, user: str, temperature: float, model_name: str = DEFAULT_MODEL) -> str:
     """
     Sampler function for Ollama API.
     
@@ -13,8 +13,6 @@ def ollama_sampler(system: str, user: str, temperature: float, top_k: int = 40, 
         system: System prompt
         user: User prompt
         temperature: Temperature (0.1-2.0)
-        top_k: Top-k sampling parameter (5-120)
-        top_p: Top-p (nucleus) sampling parameter (0.5-0.98)
         model_name: Ollama model name
     
     Returns:
@@ -33,24 +31,12 @@ def ollama_sampler(system: str, user: str, temperature: float, top_k: int = 40, 
         }
     }
     
-    # Add top_k and top_p - always include them now
-    payload["options"]["top_k"] = int(top_k)
-    payload["options"]["top_p"] = float(top_p)
-    
     try:
-        print(f"DEBUG: Sending to Ollama - model={model_name}, temp={temperature}, top_k={top_k}, top_p={top_p}")
         response = requests.post(OLLAMA_URL, json=payload, timeout=120)
-        
-        if not response.ok:
-            error_detail = response.text
-            print(f"DEBUG: Ollama error response: {error_detail}")
-            
         response.raise_for_status()
         result = response.json()
         return result.get("response", "").strip()
     except requests.exceptions.RequestException as e:
-        print(f"DEBUG: Request exception - {str(e)}")
         return f"[Error: Ollama request failed - {str(e)}]"
     except json.JSONDecodeError as e:
-        print(f"DEBUG: JSON decode error - {str(e)}")
         return f"[Error: Invalid JSON response - {str(e)}]"
