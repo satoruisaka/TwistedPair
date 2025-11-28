@@ -1,5 +1,5 @@
 # ensemble.py
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from twistedtypes import Signal, Knobs, AgentOutput, Prompt
 from pedal import distort
@@ -21,7 +21,8 @@ def run_ensemble(agent, signal: Signal, knob_sets: List[Knobs]) -> List[AgentOut
                 signal_id=signal.id,
                 reasoning_style=f"{knobs.mode.value}/{knobs.tone.value}",
                 model_info={"model_name": agent.model_name},
-                created_at=datetime.utcnow().isoformat(),
+                # created_at=datetime.utcnow().isoformat(),
+                created_at=datetime.now(timezone.utc).isoformat(),
                 provenance=prompt.metadata
             )
         )

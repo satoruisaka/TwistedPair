@@ -1,27 +1,18 @@
 # ollama_sampler.py
+# Sampler function for Ollama API
+
 import requests
 import json
+from config import OLLAMA_URL, DEFAULT_MODEL, NUM_CTX
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-
-AVAILABLE_LLM_MODELS = [
-    "dolphin3",
-    "gemma3:4b",
-    "llama3.1",
-    "mistral",
-    "openchat",
-    "phi3:14b",
-    "qwen3"
-]
-
-def ollama_sampler(system: str, user: str, temperature: float, model_name: str = "llama3.1") -> str:
+def ollama_sampler(system: str, user: str, temperature: float, model_name: str = DEFAULT_MODEL) -> str:
     """
     Sampler function for Ollama API.
     
     Args:
         system: System prompt
         user: User prompt
-        temperature: Temperature (0.0-1.0)
+        temperature: Temperature (0.1-2.0)
         model_name: Ollama model name
     
     Returns:
@@ -35,7 +26,8 @@ def ollama_sampler(system: str, user: str, temperature: float, model_name: str =
         "prompt": full_prompt,
         "stream": False,
         "options": {
-            "temperature": temperature
+            "temperature": temperature,
+            "num_ctx": NUM_CTX
         }
     }
     

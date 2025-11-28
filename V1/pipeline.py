@@ -1,14 +1,11 @@
 # pipeline.py
+import os, json
 import uuid
 from twistedtypes import Signal, Knobs, Mode, Tone
 from agent import Agent
 from ensemble import run_ensemble, braid
 from utils import to_serializable
 
-import os, json
-from index_generator import generate_index
-
-import json, os
 from dataclasses import asdict
 from index_generator import generate_index
 
@@ -34,8 +31,6 @@ def write_index_incremental(new_run: dict, out_dir: str = "./runs"):
     html = generate_index(runs)
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
-
-
         
 def write_index(runs: list[dict], out_dir: str = "./runs"):
     """

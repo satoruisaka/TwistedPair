@@ -5,10 +5,12 @@ from pydantic import BaseModel
 from datetime import datetime, timezone
 from pipeline import process_signal, normalize_capture, default_knob_sets
 from agent import Agent
-from ollama_sampler import ollama_sampler, AVAILABLE_LLM_MODELS
-from config import DEFAULT_MODEL
+from ollama_sampler import ollama_sampler
+from config import DEFAULT_MODEL, AVAILABLE_LLM_MODELS
 from twistedtypes import Signal, Knobs, Mode, Tone
 import uuid
+from ensemble import run_ensemble
+
 
 app = FastAPI()
 
@@ -72,9 +74,7 @@ def distort(capture: Capture):
         tone = Tone(capture.tone)
         gain = capture.gain
         custom_knobs = [Knobs(mode, tone, gain) for mode in Mode]
-        result = process_signal(agent, signal, ensemble=True)
-        # Override with custom knobs
-        from ensemble import run_ensemble
+        # Use custom knobs directly - don't call process_signal first
         outputs = run_ensemble(agent, signal, custom_knobs)
         result = {"signal": signal, "outputs": outputs, "summary": ""}
     else:

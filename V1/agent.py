@@ -1,7 +1,7 @@
 # agent.py
 from datetime import datetime, timezone
 from twistedtypes import Prompt, Knobs, Signal, AgentOutput
-from pedal import build_prompt
+from pedal import distort
 
 class Agent:
     def __init__(self, agent_id: str, model_name: str, sampler):
@@ -10,7 +10,7 @@ class Agent:
         self.sampler = sampler  # callable(system, user, temperature) -> str
 
     def run(self, signal: Signal, knobs: Knobs) -> AgentOutput:
-        prompt = build_prompt(signal, knobs)
+        prompt = distort(signal, knobs)
         response = self.sampler(
             system=prompt.system,
             user=prompt.user,
