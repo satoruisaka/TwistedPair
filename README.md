@@ -30,13 +30,41 @@ TwistedPair is a signal distortion system with three control knobs:
 - **Ensemble Mode**: Run all 6 distortion modes simultaneously with shared Tone/Gain
 - **Manual Mode**: Select specific Mode + Tone + Gain combination for targeted output
 
+With **6 modes × 5 tones × 10 gain levels = 300 different "pedal settings"** to explore, you have extensive signal distortion possibilities.
+
+### Sample Settings for Specific Purposes
+
+**Accurate Summarization:**
+- **CUCUMB_ER + NEUTRAL + Gain=1** - Analytical summary with clear language
+- **ECHO_ER + NEUTRAL + Gain=3** - Highlights key points without distortion
+
+**Deep Analysis:**
+- **SO_WHAT_ER + TECHNICAL + Gain=3~5** - Explore implications with precision
+- **CUCUMB_ER + TECHNICAL + Gain=2~4** - Structured, evidence-oriented commentary
+
+**Creative Exploration:**
+- **WHAT_IF_ER + POETIC + Gain=6~8** - Imaginative scenarios with lyrical language
+- **ECHO_ER + POETIC + Gain=5~7** - Amplify ideas with metaphorical richness
+
+**Critical Thinking:**
+- **INVERT_ER + SATIRICAL + Gain=4~6** - Challenge assumptions with wit
+- **SO_WHAT_ER + PRIMAL + Gain=4~6** - Provocative questioning with raw impact
+
+**Historical Context:**
+- **ARCHIV_ER + TECHNICAL + Gain=3~4** - Scholarly references and parallels
+- **ARCHIV_ER + NEUTRAL + Gain=2~3** - Clear historical contextualization
+
+**Maximum Chaos (Experimental):**
+- **Any Mode + PRIMAL + Gain=10** - Extreme creativity, unpredictable outputs
+- **WHAT_IF_ER + SATIRICAL + Gain=10** - Wild speculative humor
+
 ---
 
-![TwistedPair V1 manual mode](./V1/TwistedPairV1_screenshot1.jpg)
+![TwistedPair V1 manual mode](TwistedPairV1_screenshot1.jpg)
 
 ---
 
-![TwistedPair V1 ensemble mode](./V1/TwistedPairV1_screenshot2.jpg)
+![TwistedPair V1 ensemble mode](TwistedPairV1_screenshot2.jpg)
 
 ---
 
@@ -205,6 +233,7 @@ Built with:
 
 **TwistedPair V1.0** - Signal distortion through rhetorical operations  
 *"Like a pedal, but for ideas"*
+
 
 
 
