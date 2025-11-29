@@ -60,7 +60,7 @@ With **6 modes × 5 tones × 10 gain levels = 300 different "pedal settings"** t
 
 ---
 
-![TwistedPair V1 manual mode](./V!/TwistedPairV1_screenshot1.jpg)
+![TwistedPair V1 manual mode](./V1/TwistedPairV1_screenshot1.jpg)
 
 ---
 
@@ -233,6 +233,7 @@ Built with:
 
 **TwistedPair V1.0** - Signal distortion through rhetorical operations  
 *"Like a pedal, but for ideas"*
+
 
 
 
