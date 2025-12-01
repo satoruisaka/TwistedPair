@@ -4,7 +4,7 @@
 
  TwistedPair is a distortion pedal for your thoughts, an experimental application that exploits the unpredictable, hallucinatory nature of LLMs with three control knobs to provide diverse perspectives on any input. It is built on HTML frontend with FastAPI, Uvicorn, and Ollama backend.
 
-![TwistedPair control knobs](TwistedPairV1.jpg)
+![TwistedPair control knobs](./images/TwistedPairV1.jpg)
 
 ## 2. TwistedPair Versions
 
@@ -136,11 +136,11 @@ The high temperature value results in flatter distribution and `"banana"` become
 
 The graph below illustrates the effect of temperature values for the example.
 
-![TwistedPair control knobs](EffectsOfTemperature.png)
+![TwistedPair control knobs](./images/EffectsOfTemperature.png)
 
 The graph below shows the effect of temperature values for 100 token samples.
 
-![TwistedPair control knobs](EffectsOfTemperature100.png)
+![TwistedPair control knobs](./images/EffectsOfTemperature100.png)
 
 ---
 
@@ -165,7 +165,7 @@ Since top-k cuts off token samples below the top-k value,
 
 The graph below illustrates the effect of Top-k values.
 
-![TwistedPair control knobs](EffectsOfTopK.png)
+![TwistedPair control knobs](./images/EffectsOfTopK.png)
 
 ---
 
@@ -187,7 +187,7 @@ Since Top-p dynamically selects tokens based on cumulative probability,
 
 The graph below illustrates the effect of Top-p values.
 
-![TwistedPair control knobs](EffectsOfTopP.png)
+![TwistedPair control knobs](./images/EffectsOfTopP.png)
 
 ---
 
@@ -290,6 +290,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
