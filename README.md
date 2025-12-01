@@ -159,9 +159,9 @@ Since top-k cuts off token samples below the top-k value,
   * renormalizes probabilities → `"mat" ≈ 0.73`, `"sofa" ≈ 0.27`.  
 
 * if **Top‑k = 40**,
-* all three are kept,  
-* distribution unchanged: `"mat"=0.66, "sofa"=0.24, "banana"=0.10`,
-* equivalent to “no cutoff” here.
+  * all three are kept,  
+  * distribution unchanged: `"mat"=0.66, "sofa"=0.24, "banana"=0.10`,
+  * equivalent to “no cutoff” here.
 
 The graph below illustrates the effect of Top-k values.
 
@@ -180,10 +180,10 @@ Since Top-p dynamically selects tokens based on cumulative probability,
   * Same effect as top‑k=1.
 
 * if **Top‑p = 0.9**,  
-* the top two samples `"mat"` (0.66) + `"sofa"` (0.24) = 0.90 → threshold reached,  
-* sets the candidate set = {`"mat"`, `"sofa"`},
-* renormalizes probabilities → `"mat" ≈ 0.73`, `"sofa" ≈ 0.27`.  
-* `"banana"` excluded.
+  * the top two samples `"mat"` (0.66) + `"sofa"` (0.24) = 0.90 → threshold reached,  
+  * sets the candidate set = {`"mat"`, `"sofa"`},
+  * renormalizes probabilities → `"mat" ≈ 0.73`, `"sofa" ≈ 0.27`.  
+  * `"banana"` excluded.
 
 The graph below illustrates the effect of Top-p values.
 
@@ -290,6 +290,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
