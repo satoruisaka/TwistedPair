@@ -1,36 +1,213 @@
-# 🎸 TwistedPair V1.0
+# 🎸 TwistedPair Technical Overview
 
-Transform your signals through LLM-based distortion pedals. Like a guitar pedal processes audio, TwistedPair processes text through multiple "rhetorical operations" to provide diverse perspectives on any input. This is an experimental application, exploiting the unpredictable, hallucinatory nature of LLMs. 
+## 1. What is TwistedPair
 
-**Released:** November 26, 2025
+ TwistedPair is a distortion pedal for your thoughts, an experimental application that exploits the unpredictable, hallucinatory nature of LLMs with three control knobs to provide diverse perspectives on any input. It is built on HTML frontend with FastAPI, Uvicorn, and Ollama backend.
 
-## Overview
+![TwistedPair control knobs](TwistedPairV1.jpg)
 
-TwistedPair is a signal distortion system with three control knobs:
-- **Mode**: Distortion type (6 rhetorical operations)
-- **Tone**: Verbal style (5 expression styles)
-- **Gain**: Temperature/amplitude (1-10 scale)
+## 2. TwistedPair Versions
 
-### Modes (Rhetorical Operations)
-- **INVERT_ER**: Challenge the premise, argue the opposite
-- **SO_WHAT_ER**: Question significance and consequences
-- **ECHO_ER**: Amplify and validate the core message
-- **WHAT_IF_ER**: Explore alternative scenarios
-- **CUCUMB_ER**: Cool, detached, emotionless analysis
-- **ARCHIV_ER**: Contextualize with historical perspective
+- **V1**: Single-shot interaction (released November 26, 2025). See [V1](./V1)
+- **V2**: V1 features + follow-up chat session (to be released soon)
+- **V3**: V2 features + multiple information sources (planned)
 
-### Tones (Verbal Styles)
-- **NEUTRAL**: Balanced, objective expression
-- **TECHNICAL**: Precise, analytical language
-- **PRIMAL**: Raw, visceral, emotional
-- **POETIC**: Metaphorical, aesthetic expression
-- **SATIRICAL**: Ironic, humorous critique
+## 3. How TwistedPair works  
 
-### Operating Modes
-- **Ensemble Mode**: Run all 6 distortion modes simultaneously with shared Tone/Gain
-- **Manual Mode**: Select specific Mode + Tone + Gain combination for targeted output
+ The most innovative aspect of TwistedPair is the way it exploits the statistical and linguistic characteristics of LLMs. The MODE and TONE knobs modulate the user prompt with pre-defined instructions, enabling varied perspectives and expressions. The GAIN knob collectively modulates the stochastic sampling process of LLM outputs to control coherence, diversity, and creativity.
 
-With **6 modes × 5 tones × 10 gain levels = 300 different "pedal settings"** to explore, you have extensive signal distortion possibilities.
+ With **6 modes × 5 tones × 10 gain levels = 300 different "pedal settings"** with multiple **open weight models**, you have extensive signal distortion possibilities.
+
+### Mode (6 rhetorical distortion types)
+- **INVERT_ER**: Negate user claims, provide counterarguments
+- **SO_WHAT_ER**: Ask "So what?", question significance and consequences
+- **ECHO_ER**: Exaggerate, highlight strengths
+- **WHAT_IF_ER**: Ask "What if?", explore alternative scenarios
+- **CUCUMB_ER**: Cool and analytical, provide evidence-oriented commentary
+- **ARCHIV_ER**: Bring historical context and prior works
+
+### Tone (5 verbal expression styles)
+- **NEUTRAL**: Clear, concise, balanced expression
+- **TECHNICAL**: Precise, analytical, scientific language
+- **PRIMAL**: Short, punchy, aggressive words
+- **POETIC**: Lyrical, Metaphorical, mystical expression
+- **SATIRICAL**: Witty, ironic, humorous critique
+
+### Gain (10 distortion Levels)
+- **1~3**: Deterministic, factual
+- **4~6**: Balanced, natural
+- **7~8**: Creative variation
+- **9~10**: Wild, surprising
+
+### Open Weight Models (as many as you installed)
+
+ Select one from pulldown menu to compare model-specific characteristics
+
+## 4. The **MODE** and **TONE** knobs shape user prompts with pre-defined wrappers.
+
+TwistedPair adjusts the types of distortion and expression styles by wrapping user prompts with pre-defined instructions. See pedal.py for details.
+
+## 5. The **GAIN** knob is the secret source of TwistedPair.
+
+TwistedPair adjusts the level of distortion by collectively controlling the parametric values of statistical sampling process. Specifically, TwistedPair uses the following equations to map the GAIN knob values to temperature, top-k, and top-p values.
+
+- **Temperature**
+   
+   Range: 0.1 → 2.0  
+   Equation:   $T(G) = 0.1 + \frac{(2.0 - 0.1)}{9} \cdot (G - 1)$
+   
+   Temperature scales the probability distribution of generated tokens. Lower values prioritize high-probability tokens, yielding deterministic, focused output, while higher values amplify randomness, yielding diverse, potentially incoherent output.
+
+   At GAIN = 1 → T = 0.1  
+   At GAIN = 10 → T = 2.0
+
+- **Top-k** 
+
+   Range: 5 → 120  
+   Equation:   $k(G) = 5 + \frac{(120 - 5)}{9} \cdot (G - 1)$
+
+   Top-k restricts sampling to the top k tokens. Lower values limit diversity by preventing the model from picking low‑probability tokens. Higher values allow broader lexical range.
+
+   At GAIN = 1 → k = 5  
+   At GAIN=10 → k = 120  
+
+- **Top-p**
+
+   Range: 0.50 → 0.98  
+   Equation:   $p(G) = 0.50 + \frac{(0.98 - 0.50)}{9} \cdot (G - 1)$
+
+   Top-p dynamically selects tokens based on cumulative probability. Lower values lead to conservative, focused output; higher values lead to diversity.
+
+   At GAIN = 1 → p = 0.50  
+   At GAIN = 10 → p = 0.98  
+
+#### Note: As a reference, Ollama's default values: temperature = 0.8, top-k = 40, Top-p = 0.9. 
+
+---
+
+### Illustration of the temperature, top-k, and top-p value effects
+
+A simple example may help. Imagine a LLM model is predicting the next word after a prompt: "*The cat sat on the…*"
+
+Let's say the model outputs the following logits for three candidate tokens:
+
+* `"mat"` → logit = 2.0  
+* `"sofa"` → logit = 1.0  
+* `"banana"` → logit = 0.1
+
+First, we need to convert the logits to probabilities by softmax operation:   $P_i=\frac{e^{z_i}}{\sum _je^{z_j}}$
+
+* $e^{2.0}\approx 7.39$
+* $e^{1.0}\approx 2.72$
+* $e^{0.1}\approx 1.11$
+* $Sum = 7.39 + 2.72 + 1.11 = 11.22$
+
+We get the following probabilities:
+
+* `"mat"` → 7.39 / 11.22 ≈ 0.66  
+* `"sofa"` → 2.72 / 11.22 ≈ 0.24  
+* `"banana"` → 1.11 / 11.22 ≈ 0.10
+
+So `"mat"` is most likely, but `"sofa"` and `"banana"` are possible.  
+
+#### Now let's see what happens when we apply temperature scaling $z'_i=\frac{z_i}{T}$ to logits before softmax.
+
+If we set a low temperature value, T = 0.5:
+
+* New scaled logits: 2.0/0.5=4.0, 1.0/0.5=2.0, 0.1/0.5=0.2  
+* Updated exponentials: 54.6, 7.39, 1.22 → Sum ≈ 63.2  
+* Updated probabilities:
+   * `"mat"` ≈ 0.86
+   * `"sofa"` ≈ 0.12
+   * `"banana"` ≈ 0.02
+
+The low temperature value results in much sharper distribution and `"mat"` dominates.  
+
+Now what if we set a higher temperature value, T = 2.0?
+
+* New scaled logits: 2.0/2=1.0, 1.0/2=0.5, 0.1/2=0.05  
+* Updated exponentials: 2.72, 1.65, 1.05 → Sum ≈ 5.42  
+* Updated probabilities:
+   * `"mat"` ≈ 0.50
+   * `"sofa"` ≈ 0.30
+   * `"banana"` ≈ 0.20
+
+The high temperature value results in flatter distribution and `"banana"` becomes more likely than before.  
+
+The graph below illustrates the effect of temperature values for the example.
+
+![TwistedPair control knobs](EffectsOfTemperature.png)
+
+The graph below shows the effect of temperature values for 100 token samples.
+
+![TwistedPair control knobs](EffectsOfTemperature100.png)
+
+---
+
+#### **Let's take a look at the effect of Top-k**
+
+Since top-k cuts off token samples below the top-k value,
+
+* if **Top‑k = 1**,
+  * it cuts off `"sofa"` and `"banana"` (since only top one can be kept), 
+  * keeps only `"mat"`,
+  * renormalizes probability → `"mat" = 1.0`,
+  * becomes fully deterministic.  
+
+* if **Top‑k = 2**,  
+  * it Keeps `"mat"` and `"sofa"` but cuts off `"banana"` (since only top 2 can be kept),
+  * renormalizes probabilities → `"mat" ≈ 0.73`, `"sofa" ≈ 0.27`.  
+
+* if **Top‑k = 40**,
+* all three are kept,  
+* distribution unchanged: `"mat"=0.66, "sofa"=0.24, "banana"=0.10`,
+* equivalent to “no cutoff” here.
+
+The graph below illustrates the effect of Top-k values.
+
+![TwistedPair control knobs](EffectsOfTopK.png)
+
+---
+
+#### Now let's take a look at the effect of Top-p value.
+
+Since Top-p dynamically selects tokens based on cumulative probability,
+
+* if **Top‑p = 0.1**,  
+  * the top token sample `"mat"` exceeds 0.1 cumulative probability,  
+  * sets the candidate set = {`"mat"`},
+  * renormalizes probability → `"mat" = 1.0`.  
+  * Same effect as top‑k=1.
+
+* if **Top‑p = 0.9**,  
+* the top two samples `"mat"` (0.66) + `"sofa"` (0.24) = 0.90 → threshold reached,  
+* sets the candidate set = {`"mat"`, `"sofa"`},
+* renormalizes probabilities → `"mat" ≈ 0.73`, `"sofa" ≈ 0.27`.  
+* `"banana"` excluded.
+
+The graph below illustrates the effect of Top-p values.
+
+![TwistedPair control knobs](EffectsOfTopP.png)
+
+---
+
+### Summary of the effects from temperature, Top-k, and Top-p variations
+
+As illustrated above, temperature scales the probability distribution of generated tokens, Top-k restricts sampling to the top k tokens, and Top-p dynamically selects tokens based on cumulative probability.
+
+Therefore, lower temperature values limit diversity by preventing the model from picking low‑probability tokens. Higher temperature values allow broader lexical range. Lower Top-k values lead to conservative, focused output; higher Top-k values lead to diversity. Lower Top-p values prioritize high-probability tokens, yielding deterministic, focused output, while higher Top-p values amplify randomness, yielding diverse, potentially incoherent output.
+
+By combining the effects of the three parameter values, TwistedPair controls the level of distortion in terms of statistical sampling of the LLM outputs. The table below shows the sample values with the GAIN knob settings.
+
+   | GAIN | Temp | Top‑k | Top‑p |
+   |------|------|-------|-------|
+   | 1    | 0.10 | 5     | 0.50  |
+   | 3    | 0.55 | 30    | 0.62  |
+   | 5    | 1.00 | 55    | 0.74  |
+   | 7    | 1.45 | 80    | 0.86  |
+   | 10   | 2.00 | 120   | 0.98  |
+
+---
 
 ### Sample Settings for Specific Purposes
 
@@ -60,183 +237,59 @@ With **6 modes × 5 tones × 10 gain levels = 300 different "pedal settings"** t
 
 ---
 
-![TwistedPair V1 manual mode](./V1/TwistedPairV1_screenshot1.jpg)
+## Prior works on temperature, Top-k, and Top-p
+
+As of this writing (December 1, 2025), TwistedPair is the first application to combine temperature, Top-k, and Top-p together to intentionally control and distort the user prompts and LLM outputs. However, the effects of these parameters have been studied extensively in the literature. For example:  
+
+Top‑k sampling was introduced by Fan et al. (2018) [1], where restricting sampling to the k most probable tokens improved coherence in narrative generation. 
+
+Top‑p (nucleus) sampling was formalized by Holtzman et al. (2020) [2]. They demonstrated that nucleus sampling adaptively selects tokens covering cumulative probability mass p, producing more natural and less repetitive text than fixed top‑k.
+
+Temperature scaling has been analyzed as a mechanism for controlling randomness. For example, Lin et al (2025) [3] show that low temperatures sharpen distributions, yielding deterministic outputs, while higher temperatures flatten distributions, increasing diversity but risking incoherence.
+
+Combined strategies are discussed in practitioner guides (e.g., Hugging Face [4], Chip Huyen’s blog [5], Linuxera [6], Codefinity [7], and Langbase [8]).
 
 ---
 
-![TwistedPair V1 ensemble mode](./V1/TwistedPairV1_screenshot2.jpg)
+## 6. Open weight models
 
----
+Available models that you may have installed can be specified in config.py. For example, here is my list of models:
 
-
-
-## Features
-
-✅ **Analog Knob Interface** - Guitar pedal aesthetic with rotary drag controls  
-✅ **Completely Local** - No cloud, no cost, no Internet required. Privacy protected.  
-✅ **Multiple LLM Models** - Dynamic selection (mistral, llama3.1, gemma3:4b, phi3:14b, openchat, dolphin3, qwen3)  
-✅ **Real-time Processing** - Animated knob glow during generation  
-✅ **Copy to Clipboard** - Individual outputs or all outputs with formatted headers  
-
-## Quick Start
-
-### Prerequisites
-- Python 3.8+
-- [Ollama](https://ollama.ai) installed and running
-- At least one model installed (recommended: `ollama pull mistral`)
-
-### Installation
-
-1. **Install Python dependencies:**
-```bash
-pip install fastapi==0.121.3 uvicorn==0.38.0 requests==2.32.5 jinja2==3.1.6
-```
-
-2. **Start Ollama** (if not already running):
-```bash
-ollama serve
-```
-
-3. **Start the TwistedPair server:**
-```bash
-uvicorn server:app --reload
-```
-
-4. **Open the interface:**
-   - Open `index.html` in your web browser
-   - Or navigate to `http://localhost:8000` (if served)
-
-### Running Tests
-
-Validate the installation with the test suite:
-```bash
-python test_twistedpair.py
-```
-
-This runs a sample signal through all 6 modes and outputs results to `./runs/`.
-
-## Usage
-
-### Ensemble Mode (Default)
-1. Enter your signal in the text area
-2. Adjust **Tone** and **Gain** knobs
-3. Select your preferred LLM model
-4. Click **"🔊 Distort Signal (All 6 Modes)"**
-5. View 6 different perspectives simultaneously
-
-### Manual Mode
-1. Toggle to **Manual Mode**
-2. Adjust **Mode**, **Tone**, and **Gain** knobs
-3. Select your preferred LLM model
-4. Click **"🔊 Distort Signal"**
-5. View single targeted output
-
-### Knob Controls
-- **Drag the red handle** in circular motion to rotate knobs
-- **270° rotation range** (-135° to +135°)
-- Real-time value display updates as you drag
-
-### Tips
-- Use **Shift+Enter** to quickly submit
-- Click **✕ Clear** to reset input
-- Click **✕ Cancel** to abort processing
-- Use **📋 Copy** buttons to save outputs
-- Try different models for varied responses
-
-## Architecture
-
-### Core Components
-- **pedal.py** - Prompt engineering (mode instructions + tone styles)
-- **agent.py** - LLM execution wrapper with sampler injection
-- **ensemble.py** - Multi-perspective processing
-- **server.py** - FastAPI REST API
-- **ollama_sampler.py** - Ollama HTTP client
-- **index.html** - Analog knob web interface
-
-### API Endpoints
-- `POST /distort` - Ensemble mode (6 outputs)
-- `POST /distort-manual` - Manual mode (single output)
-- `GET /knobs` - Available modes and tones
-- `GET /models` - Available Ollama models
-
-### Data Flow
-```
-User Input → Signal → Knobs → Prompt → Agent → LLM → AgentOutput → Display
-```
-
-## Configuration
-
-Edit `config.py` to customize:
-```python
-DEFAULT_MODEL = "mistral"  # Change default LLM
-AVAILABLE_LLM_MODELS = [...]  # Add/remove models
-OUTPUT_DIR = "./runs"  # Change output directory
-```
-
-## Version Artifacts
-
-This release includes multiple interface variants:
-- **index.html** - Default (analog knobs + glow effects)
-- **index_simple.html** - Dropdown selectors (no knobs)
-- **index_noFX.html** - Analog knobs without glow effects
-
-## Development
-
-### Immutability Pattern
-All core types (`Signal`, `Knobs`, `Prompt`) use frozen dataclasses for provenance integrity. Never modify after creation—always create new instances.
-
-### Sampler Injection
-`Agent` takes a callable instead of hardcoded LLM client:
-```python
-Agent(agent_id="...", model_name="...", sampler=my_llm_function)
-# sampler signature: (system: str, user: str, temperature: float) -> str
-```
-
-### Adding New Models
-Edit `config.py`:
-```python
+<pre>
 AVAILABLE_LLM_MODELS = [
-    "mistral",
-    "your-new-model",  # Add here
-    ...
+    "deepseek-r1:8b",
+    "dolphin3:latest",
+    "gemma3:4b",
+    "gpt-oss:20b",
+    "llama3.1:8b",
+    "mistral:latest",
+    "openchat:latest",
+    "phi3:14b",
+    "qwen3:latest"
 ]
-```
+</pre>
 
-Then pull the model: `ollama pull your-new-model`
-
-## Roadmap
-
-### V1.0 ✅ (Current Release)
-- Manual interface with analog knobs
-- Ensemble and manual modes
-- 7 LLM model support
-- Full polish suite
-
-### V2.0 (Planned)
-- Screenpipe integration for automatic capture
-- Background monitoring of clipboard/screen
-- Auto-trigger distortion on new content
-- Archive history with index.html generation
-
-## License
-
-MIT
-
-## Credits
-
-Built with:
-- [Ollama](https://ollama.ai) - Local LLM runtime
-- [FastAPI](https://fastapi.tiangolo.com) - Web framework
-- [Uvicorn](https://www.uvicorn.org) - ASGI server
+It is highly recommended to try many different models to recognize the differences of models in terms of their reasoning and instruction-following capabilities. They are surprisingly different, and once you become familiar with their strengths and weaknesses, a few favorites will emerge. Mine for example are qwen3 and deepseek-r1 for both instruction-following and reasoning.
 
 ---
 
-**TwistedPair V1.0** - Signal distortion through rhetorical operations  
-*"Like a pedal, but for ideas"*
+## References
 
+[1]: Fan, A., Lewis, M., & Dauphin, Y. (2018). Hierarchical neural story generation. Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 889–898. Association for Computational Linguistics. https://doi.org/10.18653/v1/P18-1082
 
+[2]: Holtzman, A., Buys, J., Du, L., Forbes, M., & Choi, Y. (2020). The curious case of neural text degeneration. International Conference on Learning Representations (ICLR). https://openreview.net/forum?id=rygGQyrFvH
 
+[3]: Li, X., Zhang, Y., Chen, J., & Wang, Z. (2025). Exploring the impact of temperature on large language models: Hot or cold? arXiv preprint arXiv:2501.01234. https://arxiv.org/abs/2501.01234
 
+[4]: Huyen, C. (2024). Generation configurations: Temperature, top‑k, top‑p, and test time compute. Retrieved from https://huyenchip.com/blog
+
+[5]: Hugging Face. (2023). Text generation strategies: Greedy, beam search, top‑k, and nucleus sampling. Hugging Face Documentation. https://huggingface.co/docs
+
+[6]: Linuxera. (2024, March 15). Turning the knobs of LLM text generation. Linuxera. https://linuxera.org/turning-the-knobs-of-llm-text-generation/
+
+[7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
+
+[8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
 
 
 
