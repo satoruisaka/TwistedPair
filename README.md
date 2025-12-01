@@ -47,7 +47,7 @@
 
 TwistedPair adjusts the types of distortion and expression styles by wrapping user prompts with pre-defined instructions. See pedal.py for details.
 
-## 5. The **GAIN** knob is the secret source of TwistedPair.
+## 5. The **GAIN** knob is the secret souce of TwistedPair.
 
 TwistedPair adjusts the level of distortion by collectively controlling the parametric values of statistical sampling process. Specifically, TwistedPair uses the following equations to map the GAIN knob values to temperature, top-k, and top-p values.
 
@@ -290,6 +290,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
