@@ -7,7 +7,7 @@ class Agent:
     def __init__(self, agent_id: str, model_name: str, sampler):
         self.agent_id = agent_id
         self.model_name = model_name
-        self.sampler = sampler  # callable(system, user, temperature) -> str
+        self.sampler = sampler  # callable(system, user, temperature, top_k, top_p) -> str
 
     def run(self, signal: Signal, knobs: Knobs) -> AgentOutput:
         prompt = distort(signal, knobs)
@@ -15,6 +15,8 @@ class Agent:
             system=prompt.system,
             user=prompt.user,
             temperature=prompt.temperature,
+            top_k=prompt.top_k,
+            top_p=prompt.top_p,
         )
         return AgentOutput(
             agent_id=self.agent_id,
@@ -22,7 +24,12 @@ class Agent:
             signal_id=signal.id,
             response=response,
             reasoning_style=knobs.mode.value,
-            model_info={"model_name": self.model_name, "temperature": prompt.temperature},
+            model_info={
+                "model_name": self.model_name, 
+                "temperature": prompt.temperature,
+                "top_k": prompt.top_k,
+                "top_p": prompt.top_p
+            },
             created_at=datetime.now(timezone.utc).isoformat(),
             provenance={
                 "prompt_metadata": prompt.metadata,

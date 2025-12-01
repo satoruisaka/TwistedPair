@@ -11,7 +11,7 @@ def main():
     agent = Agent(
         agent_id="twistedpair-1", 
         model_name=DEFAULT_MODEL, 
-        sampler=lambda system, user, temperature: ollama_sampler(system, user, temperature, DEFAULT_MODEL)
+        sampler=lambda system, user, temperature, top_k, top_p: ollama_sampler(system, user, temperature, top_k, top_p, DEFAULT_MODEL)
     )
 
     # Simulate a captured signal

@@ -38,6 +38,8 @@ class Prompt:
     system: str
     user: str
     temperature: float
+    top_k: int
+    top_p: float
     metadata: Dict[str, Any]
 
 @dataclass

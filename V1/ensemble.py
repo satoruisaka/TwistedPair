@@ -11,7 +11,7 @@ def run_ensemble(agent, signal: Signal, knob_sets: List[Knobs]) -> List[AgentOut
     outputs = []
     for knobs in knob_sets:
         prompt: Prompt = distort(signal, knobs)
-        response = agent.sampler(prompt.system, prompt.user, temperature=prompt.temperature)
+        response = agent.sampler(prompt.system, prompt.user, prompt.temperature, prompt.top_k, prompt.top_p)
 
         outputs.append(
             AgentOutput(

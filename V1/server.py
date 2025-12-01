@@ -28,7 +28,7 @@ def get_agent(model_name: str = DEFAULT_MODEL):
     return Agent(
         agent_id="twistedpair-web",
         model_name=model_name,
-        sampler=lambda system, user, temperature: ollama_sampler(system, user, temperature, model_name)
+        sampler=lambda system, user, temperature, top_k, top_p: ollama_sampler(system, user, temperature, top_k, top_p, model_name)
     )
 
 class Capture(BaseModel):
