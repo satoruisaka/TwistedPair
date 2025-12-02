@@ -1,0 +1,16 @@
+# TwistedPair V3 - Python Dependencies
+
+# Web Framework
+fastapi==0.122.0
+uvicorn==0.38.0
+pydantic==2.12.5
+
+# HTTP & Web Scraping
+requests==2.32.5
+beautifulsoup4==4.14.3
+lxml==6.0.2
+
+# Web Search
+ddgs==9.9.2
+
+# Note: PyYAML not required for V3 (was listed but not used)
