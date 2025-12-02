@@ -19,18 +19,19 @@ TwistedPair is a distortion pedal for your creative thoughts, an experimental ap
  With **6 modes × 5 tones × 10 gain levels = 300 different "pedal settings"** with multiple **open weight models**, you have extensive signal distortion possibilities.
 
 ### Mode (6 rhetorical distortion types)
-- **INVERT_ER**: Negate user claims, provide counterarguments
-- **SO_WHAT_ER**: Ask "So what?", question significance and consequences
-- **ECHO_ER**: Exaggerate, highlight strengths
-- **WHAT_IF_ER**: Ask "What if?", explore alternative scenarios
-- **CUCUMB_ER**: Cool and analytical, provide evidence-oriented commentary
-- **ARCHIV_ER**: Bring historical context and prior works
+
+- **INVERT_ER**: Like a nay-sayer, negate user claims, provide counterarguments 
+- **SO_WHAT_ER**: Like an astute investor, ask "So what?", question significance and consequences 
+- **ECHO_ER**: Like an amplifier with reverb, exaggerate signals, highlight strengths 
+- **WHAT_IF_ER**: Like an imaginative child or dreamer, ask "What if?", explore alternative scenarios 
+- **CUCUMB_ER**: Like a cool-headed analytical observer, provide logical, evidence-oriented commentary 
+- **ARCHIV_ER**: Like a librarian, bring historical context and prior works
 
 ### Tone (5 verbal expression styles)
 - **NEUTRAL**: Clear, concise, balanced expression
 - **TECHNICAL**: Precise, analytical, scientific language
 - **PRIMAL**: Short, punchy, aggressive words
-- **POETIC**: Lyrical, Metaphorical, mystical expression
+- **POETIC**: Lyrical, metaphorical, mystical expression
 - **SATIRICAL**: Witty, ironic, humorous critique
 
 ### Gain (10 distortion Levels)
@@ -290,6 +291,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
