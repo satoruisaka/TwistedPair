@@ -96,7 +96,9 @@ Let's say the model outputs the following logits for three candidate tokens:
 * `"sofa"` → logit = 1.0  
 * `"banana"` → logit = 0.1
 
-First, we need to convert the logits to probabilities by softmax operation:   $P_i=\frac{e^{z_i}}{\sum _je^{z_j}}$
+**Note**: The raw outputs from open‑weight models (OWMs) are called *logits*, produced by the final layer of a neural network. Etymologically derived from “logistic unit” in statistics, logits represent the model’s confidence in the next likely token given the context. Because logits are unbounded numerical scores ranging from negative infinity to positive infinity, they must be normalized into probability values between 0 and 1. For this reason, building applications with OWMs requires a wrapper inference engine such as **Ollama**, **llama.cpp**, or **vLLM**.
+
+So, first, we need to convert the logits to probabilities by softmax operation:   $P_i=\frac{e^{z_i}}{\sum _je^{z_j}}$
 
 * $e^{2.0}\approx 7.39$
 * $e^{1.0}\approx 2.72$
@@ -291,6 +293,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
