@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwistedPair V2 - Signal Distortion with Chat</title>
+  <link rel="stylesheet" href="styles_base.css">
+  <link rel="stylesheet" href="styles_v2_chat.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎸 TwistedPair V2</h1>
+    <p class="subtitle">Transform your signals through the distortion pedal</p>
+
+    <!-- Initial Distortion Section -->
+    <div id="initialSection">
+      <div class="model-selector">
+        <label for="modelSelect">🔧 LLM Model</label>
+        <select id="modelSelect">
+          <option value="">Loading models...</option>
+        </select>
+      </div>
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="switchMode('ensemble')">Ensemble Mode</button>
+        <button class="mode-btn" onclick="switchMode('manual')">Manual Mode</button>
+      </div>
+
+      <div class="input-section">
+        <textarea 
+          id="signalInput" 
+          placeholder="Enter your signal here... (e.g., 'AI will replace many jobs')"
+        ></textarea>
+        <button class="clear-btn" onclick="clearInput()">✕ Clear</button>
+      </div>
+
+      <div class="pedal-board">
+        <div class="knobs-grid">
+          <!-- Mode Knob (Manual only) -->
+          <div class="knob-container hidden" id="modeKnobContainer">
+            <div class="knob-label">MODE</div>
+            <div class="knob" id="modeKnob">
+              <div class="knob-body">
+                <div class="knob-indicator"></div>
+                <div class="knob-handle"></div>
+                <div class="knob-center"></div>
+              </div>
+            </div>
+            <div class="knob-value" id="modeValue">INVERT_ER</div>
+            <div class="knob-range">6 modes</div>
+          </div>
+
+          <!-- Tone Knob -->
+          <div class="knob-container">
+            <div class="knob-label">TONE</div>
+            <div class="knob" id="toneKnob">
+              <div class="knob-body">
+                <div class="knob-indicator"></div>
+                <div class="knob-handle"></div>
+                <div class="knob-center"></div>
+              </div>
+            </div>
+            <div class="knob-value" id="toneValue">NEUTRAL</div>
+            <div class="knob-range">5 styles</div>
+          </div>
+
+          <!-- Gain Knob -->
+          <div class="knob-container">
+            <div class="knob-label">GAIN</div>
+            <div class="knob" id="gainKnob">
+              <div class="knob-body">
+                <div class="knob-indicator"></div>
+                <div class="knob-handle"></div>
+                <div class="knob-center"></div>
+              </div>
+            </div>
+            <div class="knob-value" id="gainValue">5</div>
+            <div class="knob-range">1-10</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="distort-btn" id="distortBtn" onclick="distortSignal()">
+          <span id="btnText">🔊 Distort Signal (All 6 Modes)</span>
+        </button>
+        <button class="cancel-btn" id="cancelBtn" onclick="cancelDistortion()">
+          ✕ Cancel
+        </button>
+      </div>
+
+      <div id="outputContainer"></div>
+    </div>
+
+    <!-- Chat Interface Section -->
+    <div class="chat-interface" id="chatInterface">
+      <div class="chat-header">
+        <h2>💬 Chat Session</h2>
+        <div class="chat-knobs-display">
+          Mode: <span id="chatMode">-</span> | 
+          Tone: <span id="chatTone">-</span> | 
+          Gain: <span id="chatGain">-</span>
+        </div>
+      </div>
+
+      <div class="chat-history" id="chatHistory">
+        <!-- Messages will be appended here -->
+      </div>
+
+      <div class="fork-controls">
+        <h4>🔀 Switch Mode (Fork Session)</h4>
+        <div class="fork-pedal-board">
+          <div class="fork-knobs-grid">
+            <!-- Fork Mode Knob -->
+            <div class="knob-container">
+              <div class="knob-label">MODE</div>
+              <div class="knob" id="forkModeKnob">
+                <div class="knob-body">
+                  <div class="knob-indicator"></div>
+                  <div class="knob-handle"></div>
+                  <div class="knob-center"></div>
+                </div>
+              </div>
+              <div class="knob-value" id="forkModeValue">INVERT_ER</div>
+              <div class="knob-range">6 modes</div>
+            </div>
+
+            <!-- Fork Tone Knob -->
+            <div class="knob-container">
+              <div class="knob-label">TONE</div>
+              <div class="knob" id="forkToneKnob">
+                <div class="knob-body">
+                  <div class="knob-indicator"></div>
+                  <div class="knob-handle"></div>
+                  <div class="knob-center"></div>
+                </div>
+              </div>
+              <div class="knob-value" id="forkToneValue">NEUTRAL</div>
+              <div class="knob-range">5 styles</div>
+            </div>
+
+            <!-- Fork Gain Knob -->
+            <div class="knob-container">
+              <div class="knob-label">GAIN</div>
+              <div class="knob" id="forkGainKnob">
+                <div class="knob-body">
+                  <div class="knob-indicator"></div>
+                  <div class="knob-handle"></div>
+                  <div class="knob-center"></div>
+                </div>
+              </div>
+              <div class="knob-value" id="forkGainValue">5</div>
+              <div class="knob-range">1-10</div>
+            </div>
+          </div>
+        </div>
+        <div class="fork-actions">
+          <button class="primary-btn" onclick="executeFork()">🔀 Switch Mode</button>
+          <button class="secondary-btn" onclick="toggleForkControls()">✕ Cancel</button>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <textarea 
+          id="chatInput" 
+          placeholder="Continue the conversation... (Press Enter to send)"
+        ></textarea>
+        <button id="sendChatBtn" onclick="sendChatMessage()">Send</button>
+      </div>
+
+      <div class="chat-actions">
+        <button class="secondary-btn" onclick="newQuery()">🆕 New Query</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app_v2_merged.js"></script>
+</body>
+</html>
