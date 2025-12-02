@@ -9,7 +9,7 @@
 ## 2. TwistedPair Versions
 
 - **V1**: Single-shot interaction (released November 26, 2025). See [V1](./V1)
-- **V2**: V1 features + follow-up chat session (to be released soon)
+- **V2**: V1 features + follow-up chat session (released December 1, 2025). See [V2](./V2)
 - **V3**: V2 features + multiple information sources (planned)
 
 ## 3. How TwistedPair works  
@@ -290,6 +290,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
