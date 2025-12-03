@@ -8,12 +8,16 @@ TwistedPair is a distortion pedal for your creative thoughts, an experimental ap
 
 ![TwistedPair control knobs](./images/TwistedPairV1.jpg)
 
+---
+
 ## 2. TwistedPair Versions
 
 - **V1**: Single-shot distortion (released November 26, 2025). [See V1](V1/)
 - **V2**: V1 features + multi-turn chat sessions + REST API (released December 1, 2025). [See V2](V2/)
 - **V3**: V2 features + web search integration via Brave API/DuckDuckGo (released December 2, 2025). [See V3](V3/)
 - **V4**: V3 features + local document search with FAISS semantic retrieval (planned)
+
+---
 
 ## 3. How TwistedPair works  
 
@@ -43,13 +47,19 @@ TwistedPair is a distortion pedal for your creative thoughts, an experimental ap
 - **7~8**: Creative variation
 - **9~10**: Wild, surprising
 
-### Open Weight Models (as many as you installed)
+---
+
+### Open Weight Models (as many as you install)
 
  Select one from pulldown menu to compare model-specific characteristics
 
-### *TwistedPair API reference* is available [here](TwistedPair_API_UserGuide.md)
+---
 
-### *Demonstration and sample outputs* are available [here](TwistedPair_SampleOutputs.md)
+## *TwistedPair API reference* is available [here](TwistedPair_API_UserGuide.md)
+
+---
+
+## *Demonstration and sample outputs* are available [here](TwistedPair_SampleOutputs.md)
 
 ---
 
@@ -57,7 +67,9 @@ TwistedPair is a distortion pedal for your creative thoughts, an experimental ap
 
 TwistedPair adjusts the types of distortion and expression styles by wrapping user prompts with pre-defined instructions. See pedal.py for details.
 
-## 5. The **GAIN** knob is the secret souce of TwistedPair.
+---
+
+## 5. The **GAIN** knob is the secret sauce of TwistedPair.
 
 TwistedPair adjusts the level of distortion by collectively controlling the parametric values of statistical sampling process. Specifically, TwistedPair uses the following equations to map the GAIN knob values to temperature, top-k, and top-p values.
 
@@ -302,6 +314,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
