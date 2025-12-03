@@ -11,7 +11,7 @@ TwistedPair is a distortion pedal for your creative thoughts, an experimental ap
 ## 2. TwistedPair Versions
 
 - **V1**: Single-shot distortion (released November 26, 2025). [See V1](V1/)
-- **V2**: V1 features + multi-turn chat sessions + session forking (released December 1, 2025). [See V2](V2/)
+- **V2**: V1 features + multi-turn chat sessions + REST API (released December 1, 2025). [See V2](V2/)
 - **V3**: V2 features + web search integration via Brave API/DuckDuckGo (released December 2, 2025). [See V3](V3/)
 - **V4**: V3 features + local document search with FAISS semantic retrieval (planned)
 
@@ -46,6 +46,12 @@ TwistedPair is a distortion pedal for your creative thoughts, an experimental ap
 ### Open Weight Models (as many as you installed)
 
  Select one from pulldown menu to compare model-specific characteristics
+
+### *TwistedPair API reference* is available [here](TwistedPair_API_UserGuide.md)
+
+### *Demonstration and sample outputs* are available [here](TwistedPair_SampleOutputs.md)
+
+---
 
 ## 4. The **MODE** and **TONE** knobs shape user prompts with pre-defined wrappers.
 
@@ -296,6 +302,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
