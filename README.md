@@ -4,7 +4,7 @@ Last update: December 2, 2025
 
 ## 1. What is TwistedPair
 
-TwistedPair is a distortion pedal for your creative thoughts, an experimental application that controls the behavior of large language models (LLMs) with three control knobs. It harnesses the inherent linguistic characteristics and statistical sampling processes of open‑weight models, using them as a dynamic linguistic filter for any input. Like a guitar pedal, TwistedPair modulates signals to deliver clean, accurate commentary or summaries, or, by embracing the unpredictable and hallucinatory nature of LLMs, to generate creative ideas and diverse perspectives. The application is built with an HTML frontend and a FastAPI/Uvicorn backend powered by Ollama.
+TwistedPair is a distortion pedal for your creative thoughts, a REST API application that controls the behavior of large language models (LLMs) with three knobs. It harnesses the inherent linguistic characteristics and statistical sampling processes of open‑weight models, using them as a dynamic linguistic filter for any input. Like a guitar pedal, TwistedPair modulates signals (text) to deliver clean, accurate commentary or summaries, or, by embracing the unpredictable and hallucinatory nature of LLMs, to generate creative ideas and diverse perspectives. TwistedPair runs as a FastAPI/Uvicorn server with Ollama LLM backend, accessible via web client, Python API, or any HTTP client across local networks.
 
 ![TwistedPair control knobs](./images/TwistedPairV1.jpg)
 
@@ -314,6 +314,7 @@ It is highly recommended to try many different models to recognize the differenc
 [7]: Codefinity. (2024, July 10). Understanding temperature, top‑k, and top‑p sampling in generative models. Codefinity Blog. https://codefinity.com/blog/Understanding-Temperature%2C-Top-k%2C-and-Top-p-Sampling-in-Generative-Models
 
 [8]: Langbase. (2024). LLM parameters guide. Langbase Documentation. https://langbase.com/docs/llm-parameters
+
 
 
 
