@@ -23,19 +23,16 @@ GAIN_MAX = 10
 
 # Available LLM models (make sure these are installed in Ollama)
 AVAILABLE_LLM_MODELS = [
-    "deepseek-r1:8b",
-    "dolphin3:latest",
-    "gemma3:4b",
+    "deepseek-r1:latest",
+    "gemma3:27b",
     "gpt-oss:20b",
-    "llama3.1:8b",
-    "mistral:latest",
-    "openchat:latest",
-    "phi3:14b",
+    "ministral-3:latest",
+    "ministral-3:14b",
     "qwen3:latest"
 ]
 
 # Default model for TwistedPair
-DEFAULT_MODEL = "mistral:latest"
+DEFAULT_MODEL = "ministral-3:14b"
 
 # Context window size (tokens) - most open-weight models support 20k+
 NUM_CTX = 32768

@@ -49,7 +49,7 @@ class ChatSession:
     parent_signal_id: Optional[str] = None  # Link to original Signal if from distortion
     created_at: str = field(default_factory=lambda: datetime.utcnow().isoformat())
     last_active: str = field(default_factory=lambda: datetime.utcnow().isoformat())
-    model_name: str = "mistral:latest"
+    model_name: str = "ministral-3:14b"
     
     def add_message(self, role: str, content: str) -> None:
         """Add a message to the conversation history."""

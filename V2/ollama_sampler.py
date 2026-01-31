@@ -27,6 +27,7 @@ def ollama_sampler(system: str, user: str, temperature: float, top_k: int = 40, 
         "model": model_name,
         "prompt": full_prompt,
         "stream": False,
+        "keep_alive": 0,  # Immediately release GPU memory after request
         "options": {
             "temperature": temperature,
             "num_ctx": NUM_CTX,
